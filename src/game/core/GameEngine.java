@@ -124,7 +124,7 @@ public class GameEngine {
         ui.display(currentRoom.getFullDescription());
 
 
-        if (!currentRoom.getExits().isEmpty()) {
+        /*if (!currentRoom.getExits().isEmpty()) {
             ui.display("\nEXITS:");
             for (String direction : currentRoom.getExits().keySet()) {
                 ui.display("- " + direction + " (" + currentRoom.getExits().get(direction).getName() + ")");
@@ -145,7 +145,7 @@ public class GameEngine {
             for (NPC npc : currentRoom.getNPCs()) {
                 ui.display("- " + npc.getName() + " - " + npc.getDescription());
             }
-        }
+        }*/
         ui.display("");
     }
 
@@ -270,17 +270,15 @@ public class GameEngine {
             ui.display("Examine what? You can examine:");
             Room currentRoom = worldManager.getCurrentRoom();
 
-            // Show examinable objects
+
             for (String key : currentRoom.getExamineDescriptions().keySet()) {
                 ui.display("- " + key);
             }
 
-            // Show items
             for (Item item : currentRoom.getItems()) {
                 ui.display("- " + item.getName());
             }
 
-            // Show NPCs
             for (NPC npc : currentRoom.getNPCs()) {
                 ui.display("- " + npc.getName());
             }
@@ -289,14 +287,12 @@ public class GameEngine {
 
         Room currentRoom = worldManager.getCurrentRoom();
 
-        // Check room-specific examine descriptions first
         String examineDesc = currentRoom.getExamineDescriptions().get(object.toLowerCase());
         if (examineDesc != null) {
             ui.display(examineDesc);
             return;
         }
 
-        // Check items in room
         for (Item item : currentRoom.getItems()) {
             if (item.getName().toLowerCase().contains(object.toLowerCase())) {
                 ui.display(item.getExamineDescription());
@@ -304,7 +300,7 @@ public class GameEngine {
             }
         }
 
-        // Check NPCs in room
+
         for (NPC npc : currentRoom.getNPCs()) {
             if (npc.getName().toLowerCase().contains(object.toLowerCase())) {
                 ui.display(npc.getDescription());
@@ -312,7 +308,6 @@ public class GameEngine {
             }
         }
 
-        // Check inventory items
         Item inventoryItem = player.getInventory().getItem(object);
         if (inventoryItem != null) {
             ui.display("From your inventory: " + inventoryItem.getExamineDescription());
@@ -370,7 +365,7 @@ public class GameEngine {
             currentRoom.removeItem(itemToTake);
             ui.display("You take the " + itemToTake.getName() + ".");
 
-            // Update story flags
+
             if (itemToTake.getName().equals("Ornate Key")) {
                 storyManager.setFlag("found_key", true);
                 ui.display("The key pulses with a strange energy...");
@@ -415,7 +410,7 @@ public class GameEngine {
            }
        }
 
-       // Energy Revolver special uses
+
        if (itemName.toLowerCase().contains("revolver") || itemName.toLowerCase().contains("gun")) {
            if (player.getInventory().hasItem("Energy Revolver")) {
                if (currentRoom.getId().equals("original_gate")) {
@@ -433,7 +428,6 @@ public class GameEngine {
            }
        }
 
-       // Final choice commands
        if (currentRoom.getId().equals("original_gate")) {
            if (itemName.toLowerCase().contains("seal") || itemName.toLowerCase().equals("seal gate")) {
                handleFinalChoice("seal");
@@ -552,7 +546,6 @@ public class GameEngine {
             storyManager.setFlag("met_mayor", true);
             ui.display("\n[You feel like you should visit Elias's shop]");
         } else if (storyManager.getFlag("got_letter") && !storyManager.getFlag("got_coin")) {
-            // Give the coin
             player.getInventory().addItem(new game.items.AncientCoin());
             storyManager.setFlag("got_coin", true);
             ui.display("\nMayor Thorne hands you an ancient coin.");
@@ -591,7 +584,7 @@ public class GameEngine {
             ui.display("\n[You can now lead Linna back to town, but she seems... changed.]");
             ui.display("[Try going back to town square with her.]");
         } else if (storyManager.getFlag("linna_in_town")) {
-            // Linna's corruption increases over time
+
             if (linna instanceof game.entities.Linna) {
                 ((game.entities.Linna)linna).increaseCorruption();
             }
@@ -641,7 +634,7 @@ public class GameEngine {
             ui.display("The Gate whispers: \"Welcome back, Chosen One.\"");
             ui.display("=".repeat(50));
 
-            // Reset everything
+
             storyManager = new StoryManager();
             player = new Player();
             worldManager.loadWorld();
